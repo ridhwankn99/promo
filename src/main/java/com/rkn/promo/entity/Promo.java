@@ -1,5 +1,7 @@
 package com.rkn.promo.entity;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,9 +21,11 @@ public class Promo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String kode_promo;
-	private String start_valid_date;
-	private String end_valid_date;
+	private Date start_valid_date;
+	private Date end_valid_date;
 	
-	private long kuota;
+	private Long kuota;
+
+
 
 }

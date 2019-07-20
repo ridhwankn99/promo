@@ -1,14 +1,15 @@
 package com.rkn.promo.controller;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.poi.ss.formula.functions.Today;
+import org.aspectj.lang.annotation.Before;
+import org.hibernate.validator.internal.engine.ValidationContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,27 +38,60 @@ public class PromoController {
 		
 		return result;
 	}
+//	
+//	@GetMapping("/getPromo/{id}")
+//	public Promo getById(@PathVariable Long id){
+//		Promo result = promoDao.findById(id).orElse(null);
+//		
+//		
+//        Date dateValid = result.getEnd_valid_date();        
+//        Date today = new Date();
+//           
+//            
+//            
+//        if(dateValid.after(today)) {
+//        	System.out.println("Valid");
+//        }else if (dateValid.before(today)) {
+//			System.out.println("Tidak valid");
+//		}
+//      
+//		return result;
+//	}
 	
-	@GetMapping("/getPromo/{id}")
-	
-	public Promo getById(@PathVariable Long id) throws ParseException{
-		Promo result = promoDao.findById(id).orElse(null);
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        //String dateInString = "07/06/2013";
-        String dateValidInString = result.getEnd_valid_date();
-        
-        Date today = new Date();
-            Date dateValidDate = formatter.parse(dateValidInString);
-            System.out.println(dateValidDate);
-            System.out.println(formatter.format(dateValidDate));
-        if(dateValidDate.after(today)) {
-        	System.out.println("Tidak Valid");
-        }else if (dateValidDate.before(today)) {
-			System.out.println("valid");
+	@PostMapping("/kodePromo")
+	public ResponseEntity<?> insert(@RequestBody Promo promo){
+		Date dateValid = promo.getEnd_valid_date();
+		Date today = new Date();
+		
+		try {
+			Promo p = promoDao.findKodePromo(promo.getKode_promo());
+			if(dateValid.after(today) || dateValid.before(promo.getStart_valid_date())) {
+				return ResponseEntity.ok("Kode Promo Tidak Tersedia");
+			}else if (dateValid.before(today)|| dateValid.after(promo.getStart_valid_date())) {
+				return ResponseEntity.ok("Kode Promo Tersedia");
+			}
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
-		return result;
+		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 	}
+	
+//	Promo getByKodePromo(@RequestBody String kode_promo) {
+//		Promo promoSearch = promoDao.findBySearch(kode_promo);
+//
+//	
+//	Date today = new Date();
+//            
+//        if(dateValid.after(today)) {
+//        	result.notify("valid");
+//        	System.out.println("Valid");
+//        }else if (dateValid.before(today)) {
+//			System.out.println("Tidak valid");
+//		}
+//      
+//		return result;
+//	}
+	
 	
 	
 	@PostMapping(value = "add")
@@ -92,5 +126,4 @@ public class PromoController {
 		result.put("message", "Berhasil dihapus");
 		return result;
 	}
-
 }
