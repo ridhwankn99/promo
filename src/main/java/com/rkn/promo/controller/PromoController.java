@@ -40,58 +40,30 @@ public class PromoController {
 		
 		return result;
 	}
-//	
-//	@GetMapping("/getPromo/{id}")
-//	public Promo getById(@PathVariable Long id){
-//		Promo result = promoDao.findById(id).orElse(null);
-//		
-//		
-//        Date dateValid = result.getEnd_valid_date();        
-//        Date today = new Date();
-//           
-//            
-//            
-//        if(dateValid.after(today)) {
-//        	System.out.println("Valid");
-//        }else if (dateValid.before(today)) {
-//			System.out.println("Tidak valid");
-//		}
-//      
-//		return result;
-//	}
 	
 	@PostMapping("/kodePromo")
 	public ResponseEntity<?> insert(@RequestBody Promo promo){
-		Date dateValid = promo.getEnd_valid_date();;
-		Promo pr = new Promo();
+		Date dateValid = promoDao.findEndDate(promo.getKode_promo());;
+		//Promo pr = new Promo();
 		Date today = new Date();
-		System.out.println(promo.getKode_promo());
-		String kodePromo = promo.getKode_promo();
-		pr = promoDao.findKodePromo(kodePromo)	;	//Date dateValid = promoDao.findEndDate(kodePromo);
-		System.out.println(pr.getEnd_valid_date());
-		//Promo pr = pro
-		
-//		Date dateValid = promoDao.findEndDate(kodePromo);
-		
-		
+				
 		try {
 			Promo p = promoDao.findKodePromo(promo.getKode_promo());
 			if(dateValid.after(today)) {
-				return  ResponseEntity.ok("Kode Promo Tidak Tersedia");
+				
+				return  ResponseEntity.ok("Kode Promo Tersedia");
 			}else if (dateValid.before(today)) {
-				return ResponseEntity.ok("Kode Promo Tersedia");
+				return ResponseEntity.ok("Kode Promo Tidak Tersedia");
 			}
 		} catch (Exception e) {
-//			log.error(e.getMessage(), e);
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-//		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		return null;
 	}
 	
 //	@PostMapping("/kodePromo")
 //	public ResponseEntity<?> insert(@RequestBody Promo promo){
-//		Date dateValid = promo.getEnd_valid_date();
+//		Date dateValid = promo.getEnd_valid_date(); 
 //		Date today = new Date();
 //		
 //		try {
@@ -106,24 +78,6 @@ public class PromoController {
 //		}
 //		return new ResponseEntity<>(HttpStatus.ACCEPTED);
 //	}
-	
-//	Promo getByKodePromo(@RequestBody String kode_promo) {
-//		Promo promoSearch = promoDao.findBySearch(kode_promo);
-//
-//	
-//	Date today = new Date();
-//            
-//        if(dateValid.after(today)) {
-//        	result.notify("valid");
-//        	System.out.println("Valid");
-//        }else if (dateValid.before(today)) {
-//			System.out.println("Tidak valid");
-//		}
-//      
-//		return result;
-//	}
-	
-	
 	
 	@PostMapping(value = "add")
 	public Promo add (@RequestBody Promo promo) {

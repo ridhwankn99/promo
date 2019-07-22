@@ -24,6 +24,7 @@ public class Promo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
 	private String kode_promo;
 	private Date start_valid_date;
 	

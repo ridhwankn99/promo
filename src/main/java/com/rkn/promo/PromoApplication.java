@@ -26,7 +26,7 @@ public class PromoApplication implements ApplicationRunner{
 		//promoDao.findAll().forEach(System.out::println);
 		///Date dateValid = promoDao.findEndDate("EA234B");
 //		Promo promo = new Promo();
-		//System.out.println(promoDao.findEndDate("EA234B"));
+//		System.out.println(promoDao.findEndDate("EA234B"));
 
 //		promoDao.findEndDate("EA234B");
 		
