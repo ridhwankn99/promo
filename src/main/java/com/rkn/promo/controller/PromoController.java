@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.aspectj.lang.annotation.Before;
-import org.hibernate.validator.internal.engine.ValidationContext;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +30,8 @@ public class PromoController {
 	@Autowired
 	private PromoDao promoDao;
 	Promo promo;
+	
+	private Log log = LogFactory.getLog(getClass());
 	
 	@GetMapping("/getPromo")
 	public List<Promo> getAllPromo(){
@@ -60,21 +62,50 @@ public class PromoController {
 	
 	@PostMapping("/kodePromo")
 	public ResponseEntity<?> insert(@RequestBody Promo promo){
-		Date dateValid = promo.getEnd_valid_date();
+		Date dateValid = promo.getEnd_valid_date();;
+		Promo pr = new Promo();
 		Date today = new Date();
+		System.out.println(promo.getKode_promo());
+		String kodePromo = promo.getKode_promo();
+		pr = promoDao.findKodePromo(kodePromo)	;	//Date dateValid = promoDao.findEndDate(kodePromo);
+		System.out.println(pr.getEnd_valid_date());
+		//Promo pr = pro
+		
+//		Date dateValid = promoDao.findEndDate(kodePromo);
+		
 		
 		try {
 			Promo p = promoDao.findKodePromo(promo.getKode_promo());
-			if(dateValid.after(today) || dateValid.before(promo.getStart_valid_date())) {
-				return ResponseEntity.ok("Kode Promo Tidak Tersedia");
-			}else if (dateValid.before(today)|| dateValid.after(promo.getStart_valid_date())) {
+			if(dateValid.after(today)) {
+				return  ResponseEntity.ok("Kode Promo Tidak Tersedia");
+			}else if (dateValid.before(today)) {
 				return ResponseEntity.ok("Kode Promo Tersedia");
 			}
 		} catch (Exception e) {
+//			log.error(e.getMessage(), e);
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+//		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+		return null;
 	}
+	
+//	@PostMapping("/kodePromo")
+//	public ResponseEntity<?> insert(@RequestBody Promo promo){
+//		Date dateValid = promo.getEnd_valid_date();
+//		Date today = new Date();
+//		
+//		try {
+//			Promo p = promoDao.findKodePromo(promo.getKode_promo());
+//			if(dateValid.after(today) || dateValid.before(promo.getStart_valid_date())) {
+//				return ResponseEntity.ok("Kode Promo Tidak Tersedia");
+//			}else if (dateValid.before(today)|| dateValid.after(promo.getStart_valid_date())) {
+//				return ResponseEntity.ok("Kode Promo Tersedia");
+//			}
+//		} catch (Exception e) {
+//			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
+//		return new ResponseEntity<>(HttpStatus.ACCEPTED);
+//	}
 	
 //	Promo getByKodePromo(@RequestBody String kode_promo) {
 //		Promo promoSearch = promoDao.findBySearch(kode_promo);
