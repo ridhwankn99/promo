@@ -18,7 +18,9 @@ public interface PromoDao extends JpaRepository<Promo, Long>{
 	@Query("SELECT b.end_valid_date FROM Promo b WHERE b.kode_promo = :kode_promo")
 	public Date findEndDate(@Param ("kode_promo") String kode_promo);
 
-//	Promo findOne(String kode_promo);
+	@Query("SELECT b.kuota FROM Promo b WHERE b.kode_promo = :kodePromo")
+	public Long findKuota(@Param ("kodePromo") String kodePromo);
+	
 	
 
 }

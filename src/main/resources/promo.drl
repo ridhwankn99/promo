@@ -1,0 +1,10 @@
+package KieRule
+import com.rkn.promo.entity.promo
+
+rule "EA434B"
+
+when
+promoObject : Promo(kode_promo == "EA434B" );
+then 
+oerderObject.setDiscount(10);
+end;

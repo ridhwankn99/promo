@@ -46,12 +46,16 @@ public class PromoController {
 		Date dateValid = promoDao.findEndDate(promo.getKode_promo());;
 		//Promo pr = new Promo();
 		Date today = new Date();
-				
+		Long kuota = promoDao.findKuota(promo.getKode_promo());	
+		System.out.println(kuota);
+		Promo pr = promoDao.findKodePromo(promo.getKode_promo());
 		try {
 			Promo p = promoDao.findKodePromo(promo.getKode_promo());
-			if(dateValid.after(today)) {
-				
-				return  ResponseEntity.ok("Kode Promo Tersedia");
+			if(dateValid.after(today)&&kuota > 0) {	
+				kuota --;
+				pr.setKuota(kuota);
+				promoDao.save(pr);
+				return  ResponseEntity.ok("Kode Promo Tersedia "+",Sisa Kuota = "+kuota);
 			}else if (dateValid.before(today)) {
 				return ResponseEntity.ok("Kode Promo Tidak Tersedia");
 			}

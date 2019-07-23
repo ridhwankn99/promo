@@ -15,8 +15,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 
-@Getter
-@Setter
+@Data
 @ToString(callSuper = true)
 @Entity
 @Table(name = "promo")
