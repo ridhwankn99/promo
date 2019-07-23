@@ -1,0 +1,16 @@
+package rules
+
+import com.rkn.promo.entity.promo
+
+rule "Offer for Discount1"
+	when 
+		promoObject: Promo(kode_promo=="EA434B")
+	then
+		promoObject.setDiscount(15);
+	end
+rule "Offer for Discount2"
+	when 
+		promoObject: Promo(kode_promo=="EA234B")
+	then
+		promoObject.setDiscount(25);
+	end
