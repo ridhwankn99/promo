@@ -1,16 +1,26 @@
 package rules
 
-import com.rkn.promo.entity.promo
+import com.rkn.promo.entity.Promo;
+import com.rkn.promo.entity.PromoReturn;
 
-rule "Offer for Discount1"
+rule "Offer for EA434B"
+	dialect "java" 
 	when 
 		promoObject: Promo(kode_promo=="EA434B")
+		promo: PromoReturn()
 	then
-		promoObject.setDiscount(15);
+		promo.setKode_promo(promoObject.getKode_promo());
+		promo.setDiscount(15);
+		promo.setSisa_kuota(promoObject.getKuota());
+		update(promo);
 	end
-rule "Offer for Discount2"
+rule "Offer for EA234B"
 	when 
 		promoObject: Promo(kode_promo=="EA234B")
+		promo: PromoReturn()
 	then
-		promoObject.setDiscount(25);
+		promo.setKode_promo(promoObject.getKode_promo());
+		promo.setDiscount(15);
+		promo.setSisa_kuota(promoObject.getKuota());
+		update(promo);
 	end

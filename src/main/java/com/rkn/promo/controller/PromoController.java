@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.rkn.promo.dao.PromoDao;
 import com.rkn.promo.entity.Promo;
+import com.rkn.promo.entity.PromoReturn;
 import com.rkn.promo.service.PromoService;
 
 
@@ -32,7 +32,7 @@ public class PromoController {
 	@Autowired
 	private PromoDao promoDao;
 	
-//	private final PromoService promoService;
+	private final PromoService promoService;
 	
 //	@Bean
 //	public PromoService promoService() {
@@ -40,8 +40,7 @@ public class PromoController {
 //	}
 	
 	@Autowired
-	private PromoService promoService;
-	
+//	private PromoService promoService;
 	public PromoController(PromoService promoService) {
 		this.promoService = promoService;
 	}
@@ -59,14 +58,13 @@ public class PromoController {
 	}
 	
 	
+	
 	@PostMapping("/kodePromo")
 	public ResponseEntity<?> insert(@RequestBody Promo promo){
 		Promo promo1 = new Promo();
-		promo1.setKode_promo(promo.getKode_promo());
-		promoService.getPromoDiscount(promo1);
-//		return promo;
+//		
+		
 		Date dateValid = promoDao.findEndDate(promo.getKode_promo());;
-		//Promo pr = new Promo();
 		Date today = new Date();
 		Long kuota = promoDao.findKuota(promo.getKode_promo());	
 		System.out.println(kuota);
@@ -76,8 +74,13 @@ public class PromoController {
 			if(dateValid.after(today)&&kuota > 0) {	
 				kuota --;
 				pr.setKuota(kuota);
+				promo1.setKode_promo(pr.getKode_promo());
+				promo1.setKuota(pr.getKuota());
+				PromoReturn promoReturn = promoService.getPromoDiscount(promo1);
 				promoDao.save(pr);
-				return  ResponseEntity.ok("Kode Promo Tersedia "+",Sisa Kuota = "+kuota);
+//				return ResponseEntity.ok(PromoReturn);
+				return ResponseEntity.ok(promoReturn);
+//				return  ResponseEntity.ok("Kode Promo Tersedia "+",Sisa Kuota = "+kuota + promo1);
 			}else if (dateValid.before(today)) {
 				return ResponseEntity.ok("Kode Promo Tidak Tersedia");
 			}
@@ -86,10 +89,7 @@ public class PromoController {
 		}
 		return null;
 	}
-	
-	
-	
-	
+		
 	
 	
 //	@PostMapping("/kodePromo")
